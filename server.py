@@ -2,9 +2,9 @@ import socket
 import threading
 import os
 import time
-import collections  # for congestion queue
+import collections  
 
-HOST = "0.0.0.0"  # listen on all interfaces so other machines can connect
+HOST = "0.0.0.0"  
 PORT = 5000
 ENCODING = "utf-8"
 BUFFER_SIZE = 4096
@@ -16,18 +16,14 @@ LOGS_DIR = os.path.join(BASE_DIR, "logs")
 os.makedirs(FILES_DIR, exist_ok=True)
 os.makedirs(LOGS_DIR, exist_ok=True)
 
-clients = {}          # sock -> {"name": str, "room": str}
-rooms = {}            # room -> set(sockets)
+clients = {}         
+rooms = {}            
 
-# -------------------------------------------------------------------
-# Congestion simulation globals
-# -------------------------------------------------------------------
-# These values are chosen so queue_len is clearly visible
-CONGESTION_MODE = False          # toggle ON/OFF
-CONGESTION_MAX_QUEUE = 1000      # large queue so we don't drop right away
-CONGESTION_SEND_INTERVAL = 3.0   # VERY slow: 3 seconds per message
+CONGESTION_MODE = False          
+CONGESTION_MAX_QUEUE = 1000      
+CONGESTION_SEND_INTERVAL = 3.0   
 broadcast_queue = collections.deque()
-recent_drops = 0                 # count dropped messages (if queue overflows)
+recent_drops = 0                
 
 
 def send_line(sock, text: str):
@@ -67,7 +63,6 @@ def broadcast(room: str, text: str, exclude=None):
     """
     global CONGESTION_MODE, broadcast_queue, recent_drops
 
-    # Normal mode: send immediately
     if not CONGESTION_MODE:
         for s in list(rooms.get(room, set())):
             if s is exclude:
@@ -80,9 +75,8 @@ def broadcast(room: str, text: str, exclude=None):
                 s.close()
         return
 
-    # Congestion simulation mode: enqueue
     if len(broadcast_queue) >= CONGESTION_MAX_QUEUE:
-        # Simulate buffer overflow: drop newest message
+
         recent_drops += 1
         log_line(room, f"[CONGESTION] DROPPED message in room {room}: {text}")
         print(f"[CONGESTION] DROP - queue_len={len(broadcast_queue)}, drops={recent_drops}")
@@ -120,14 +114,12 @@ def handle_switch_room(sock, new_room: str):
         send_line(sock, f"INFO|Already in room #{new_room}")
         return
 
-    # leave old room
     if old_room in rooms:
         rooms[old_room].discard(sock)
         broadcast(old_room, f"INFO|{name} left the room.")
         broadcast_room_state(old_room)
         log_line(old_room, f"{name} left the room")
 
-    # join new room
     clients[sock]["room"] = new_room
     rooms.setdefault(new_room, set()).add(sock)
 
@@ -149,7 +141,6 @@ def congestion_worker():
         if broadcast_queue:
             room, text, exclude = broadcast_queue.popleft()
 
-            # Send to all users in that room
             for s in list(rooms.get(room, set())):
                 if s is exclude:
                     continue
@@ -162,11 +153,9 @@ def congestion_worker():
 
             print(f"[CONGESTION] SEND room={room}, remaining_queue={len(broadcast_queue)}")
 
-            # Slow link: wait between sends when congested
             if CONGESTION_MODE:
                 time.sleep(CONGESTION_SEND_INTERVAL)
             else:
-                # If mode flipped off but queue still has items, send faster
                 time.sleep(0.01)
         else:
             time.sleep(0.05)
@@ -198,7 +187,6 @@ def handle_client(sock: socket.socket, addr):
                 if not line:
                     continue
 
-                # LOGIN|username|room
                 if name is None and line.startswith("LOGIN|"):
                     parts = line.split("|", 2)
                     if len(parts) != 3:
@@ -222,7 +210,6 @@ def handle_client(sock: socket.socket, addr):
                     log_line(room, f"{name} joined the room")
                     continue
 
-                # must be logged in after this
                 if name is None or room is None:
                     send_line(sock, "ERROR|You must LOGIN first")
                     continue
@@ -239,7 +226,6 @@ def handle_client(sock: socket.socket, addr):
                     send_line(sock, f"FILE_LIST|{listing}")
 
                 elif line.startswith("FILE_UPLOAD|"):
-                    # FILE_UPLOAD|filename|size
                     parts = line.split("|", 2)
                     if len(parts) != 3:
                         send_line(sock, "ERROR|Bad FILE_UPLOAD header")
@@ -254,7 +240,6 @@ def handle_client(sock: socket.socket, addr):
                     remaining = total_size
                     chunks = []
 
-                    # consume existing buffer bytes first
                     if buffer:
                         take = min(len(buffer), remaining)
                         chunks.append(buffer[:take])
@@ -282,7 +267,7 @@ def handle_client(sock: socket.socket, addr):
                     log_line(room, f"{name} uploaded file {filename}")
 
                 elif line.startswith("FILE_DOWNLOAD|"):
-                    # FILE_DOWNLOAD|filename
+            
                     parts = line.split("|", 1)
                     if len(parts) != 2:
                         send_line(sock, "ERROR|Bad FILE_DOWNLOAD header")
@@ -320,7 +305,6 @@ def handle_client(sock: socket.socket, addr):
                     handle_switch_room(sock, new_room)
                     room = clients.get(sock, {}).get("room", room)
 
-                # ---------------- congestion commands ----------------
                 elif line == "CONGESTION_ON":
                     CONGESTION_MODE = True
                     send_line(sock, "INFO|Server congestion simulation: ON")
@@ -362,7 +346,6 @@ def handle_client(sock: socket.socket, addr):
 def start_server():
     print(f"Server listening on {HOST}:{PORT}")
 
-    # start congestion worker
     threading.Thread(target=congestion_worker, daemon=True).start()
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
