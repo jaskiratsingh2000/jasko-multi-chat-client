@@ -22,98 +22,98 @@ This application implements a TCP based multi client chatroom that is designed t
    -ssh username@public_ip
 
 
-  Step 2: Clone the repository and start the server ith an unbuffered output, it is essential to      confirm whether the server is listening.
+   Step 2: Clone the repository and start the server ith an unbuffered output, it is essential to      confirm whether the server is listening.
 
-  -git clone https://github.com/username/jasko-multi-client-chat.git
+   -git clone https://github.com/username/jasko-multi-client-chat.git
 
-  -cd jasko-multi-client-chat
+   -cd jasko-multi-client-chat
 
-  -nohup python3 -u server.py > server.out 2>&1 &
+   -nohup python3 -u server.py > server.out 2>&1 &
 
-  -sudo ss -lntp | grep 5000
+   -sudo ss -lntp | grep 5000
 
-  (listening socket on 0.0.0.0:5000)
+   (listening socket on 0.0.0.0:5000)
 
 
   Step 3: Background Execution: nohup python3 -u server.py > server.out 2>&1 &
 
-  Run the client: python client_gui.py
+   Run the client: python client_gui.py
 
-  Azure public IP: 4.186.28.124
+   Azure public IP: 4.186.28.124
 
 
 3) Features:
+   
+    -TCP socket based communication
 
-   -TCP socket based communication
+    -Multi clint support threads
 
-   -Multi clint support threads
+    -Breakout rooms for isolated discussions
 
-   -Breakout rooms for isolated discussions
+    -File upload and download
 
-   -File upload and download
+    -Congestion simulation
 
-   -Congestion simulation
+   -Message flooding for load testing
 
-  -Message flooding for load testing
-
-  -Azure cloud deployment
+   -Azure cloud deployment
 
 
 4) Reproducing Experimental Results:
 
-   Experiment 1: Function of Load under Congestion
+    Experiment 1: Function of Load under Congestion
 
-   -Connect a single client
+    -Connect a single client
 
-   -Enable congestion mode using the Cong ON button
+    -Enable congestion mode using the Cong ON button
 
-   -Use Flood Chat to send 10, 25, 50, and 100 messages
+    -Use Flood Chat to send 10, 25, 50, and 100 messages
 
-   -Measure total delivery time from flood initiation to receipt of the final message
+    -Measure total delivery time from flood initiation to receipt of the final message
 
-   -Compute average latency per message
+    -Compute average latency per message
 
 
   Experiment 2: Throughput with and without Congestion
 
-  -Connect one client
+   -Connect one client
 
-  -Flood 100 messages with congestion OFF
+   -Flood 100 messages with congestion OFF
 
-  -Record total delivery time
+   -Record total delivery time
 
-  -Enable congestion
+   -Enable congestion
 
-  -Flood 100 messages again
+   -Flood 100 messages again
 
 
 5) Architecture:
 
-   Server- Python TCP server handling
+    Server- Python TCP server handling
 
-   Client: Python GUI client
+    Client: Python GUI client
 
-   Congestion control: Centralized queue with transmission interval
+    Congestion control: Centralized queue with transmission interval
 
 
 6) Technologies Used:
 
-   Python 
+    Python 
 
-   TCP sockets
+    TCP sockets
 
-   Threading
+    Threading
 
-  Tkinter
+    Tkinter
 
-  Azure VM
+    Azure VM
 
 
 7) Congestion Simulation:
 
-   Cong ON: Enables delayed message transmission
+    Cong ON: Enables delayed message transmission
 
-   Cong OFF: Normal high throughput mode
+    Cong OFF: Normal high throughput mode
 
-   Flood Chat: Sends burst messages to simulate load
+    Flood Chat: Sends burst messages to simulate load
 
