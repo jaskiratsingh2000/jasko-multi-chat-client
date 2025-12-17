@@ -9,7 +9,7 @@ This application implements a TCP based multi client chatroom that is designed t
 
    -Python 3.8 or higher
 
-   -Netork access to VM
+   -Network access to VM
 
    Server Machine
 
