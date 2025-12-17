@@ -3,15 +3,10 @@
 This application implements a TCP based multi client chatroom that is designed to study congestion behaviour. The system supports real time emssaging, file uploads, breakout rooms, congestion simulator and message flooding mechanism. The server was deployed on microsoft azure and multiple GUI based clients can connect remotely.
 
 System Requirements: 
-
 Client Machine
-
 -Python 3.8 or higher
-
 -Netork access to VM
-
 Server Machine
-
 -TCP port 5000
 
 Instructions to execute the server:
