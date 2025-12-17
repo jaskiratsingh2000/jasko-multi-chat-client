@@ -8,7 +8,7 @@ from tkinter import scrolledtext, filedialog, messagebox, simpledialog
 ENCODING = "utf-8"
 BUFFER_SIZE = 4096
 
-SERVER_PORT = 5000  # port only; host is typed in the GUI
+SERVER_PORT = 5000  
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DOWNLOAD_DIR = os.path.join(BASE_DIR, "downloads")
@@ -31,13 +31,11 @@ def append_text(widget, msg: str, tag=None):
     widget.configure(state="disabled")
     widget.see(tk.END)
 
-
 def update_user_list(listbox, users):
     listbox.delete(0, tk.END)
     for u in users:
         if u:
             listbox.insert(tk.END, u)
-
 
 def poll_incoming(chat_box, user_listbox, status_var, room_label_var):
     global current_room
@@ -383,9 +381,6 @@ def back_to_main_room():
         return
     switch_room(main_room)
 
-
-# ----------------- congestion control commands -----------------
-
 def congestion_on():
     global sock, connected
     if not connected or sock is None:
@@ -441,7 +436,7 @@ def flood_chat():
 
 def on_close(root):
     global sock, connected
-    connected = False    # stop recv loop
+    connected = False    
     if sock is not None:
         try:
             sock.close()
@@ -455,8 +450,7 @@ def build_gui():
     root = tk.Tk()
     root.title("Jasko Relay Chat")
 
-    # Color palette
-    BG_MAIN = "#0f172a"      # dark navy
+    BG_MAIN = "#0f172a"     
     BG_PANEL = "#111827"
     BG_CHAT = "#020617"
     FG_TEXT = "#e5e7eb"
@@ -468,14 +462,13 @@ def build_gui():
     status_var = tk.StringVar(value="Disconnected")
     room_label_var = tk.StringVar(value="Room: -")
 
-    # Top frame: server / user / room / connect
     top = tk.Frame(root, bg=BG_MAIN)
     top.pack(side=tk.TOP, fill=tk.X, padx=8, pady=6)
 
     tk.Label(top, text="Server:", bg=BG_MAIN, fg=FG_TEXT).pack(side=tk.LEFT)
     server_entry = tk.Entry(top, width=15)
     server_entry.pack(side=tk.LEFT, padx=4)
-    server_entry.insert(0, "127.0.0.1")  # change to server IP on other machines
+    server_entry.insert(0, "127.0.0.1")  
 
     tk.Label(top, text="Username:", bg=BG_MAIN, fg=FG_TEXT).pack(side=tk.LEFT)
     username_entry = tk.Entry(top, width=12)
@@ -506,7 +499,6 @@ def build_gui():
     )
     room_label.pack(side=tk.RIGHT)
 
-    # Main area: chat + sidebar
     main_frame = tk.Frame(root, bg=BG_MAIN)
     main_frame.pack(fill=tk.BOTH, expand=True, padx=8, pady=4)
 
@@ -523,15 +515,13 @@ def build_gui():
     )
     chat_box.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-    # Text tags for colorful messages
-    chat_box.tag_config("self", foreground="#22c55e")     # green
-    chat_box.tag_config("other", foreground="#60a5fa")    # blue
+    chat_box.tag_config("self", foreground="#22c55e")     
+    chat_box.tag_config("other", foreground="#60a5fa")    
     chat_box.tag_config("info", foreground="#9ca3af")
     chat_box.tag_config("history", foreground="#6b7280", font=("Helvetica", 9, "italic"))
     chat_box.tag_config("error", foreground="#f97373", font=("Helvetica", 10, "bold"))
     chat_box.tag_config("stats", foreground="#eab308")
 
-    # Sidebar: users + controls
     side_frame = tk.Frame(main_frame, bg=BG_PANEL)
     side_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=(6, 0))
 
@@ -559,7 +549,6 @@ def build_gui():
         fill=tk.X, pady=1
     )
 
-    # Congestion controls
     tk.Button(info_frame, text="Cong ON", command=congestion_on, bg="#7f1d1d", fg=FG_TEXT).pack(
         fill=tk.X, pady=1
     )
@@ -591,7 +580,6 @@ def build_gui():
         fg=FG_TEXT,
     ).pack(fill=tk.X, pady=1)
 
-    # Bottom: message input + send
     bottom = tk.Frame(root, bg=BG_MAIN)
     bottom.pack(side=tk.TOP, fill=tk.X, padx=8, pady=4)
 
@@ -602,7 +590,6 @@ def build_gui():
                          command=lambda: send_message(message_entry))
     send_btn.pack(side=tk.LEFT, padx=4)
 
-    # File controls
     file_frame = tk.Frame(root, bg=BG_MAIN)
     file_frame.pack(side=tk.TOP, fill=tk.X, padx=8, pady=(0, 6))
 
@@ -616,7 +603,6 @@ def build_gui():
         side=tk.LEFT, padx=4
     )
 
-    # Status bar
     status_bar = tk.Label(
         root,
         textvariable=status_var,
