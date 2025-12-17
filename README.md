@@ -2,17 +2,25 @@
 
 This application implements a TCP based multi client chatroom that is designed to study congestion behaviour. The system supports real time emssaging, file uploads, breakout rooms, congestion simulator and message flooding mechanism. The server was deployed on microsoft azure and multiple GUI based clients can connect remotely.
 
+
 System Requirements: 
+
 Client Machine
+
 -Python 3.8 or higher
+
 -Netork access to VM
+
 Server Machine
+
 -TCP port 5000
+
 
 Instructions to execute the server:
 
 Step 1: Obtain the server IP and log into the server VM
 -ssh username@public_ip
+
 
 Step 2: Clone the repository and start the server ith an unbuffered output, it is essential to confirm whether the server is listening.
 
@@ -26,11 +34,13 @@ Step 2: Clone the repository and start the server ith an unbuffered output, it i
 
 (listening socket on 0.0.0.0:5000)
 
+
 Step 3: Background Execution: nohup python3 -u server.py > server.out 2>&1 &
 
 Run the client: python client_gui.py
 
 Azure public IP: 4.186.28.124
+
 
 Features:
 
@@ -48,6 +58,7 @@ Features:
 
 -Azure cloud deployment
 
+
 Reproducing Experimental Results:
 
 Experiment 1: Function of Load under Congestion
@@ -62,6 +73,7 @@ Experiment 1: Function of Load under Congestion
 
 -Compute average latency per message
 
+
 Experiment 2: Throughput with and without Congestion
 
 -Connect one client
@@ -74,6 +86,7 @@ Experiment 2: Throughput with and without Congestion
 
 -Flood 100 messages again
 
+
 Architecture:
 
 Server- Python TCP server handling
@@ -81,6 +94,7 @@ Server- Python TCP server handling
 Client: Python GUI client
 
 Congestion control: Centralized queue with transmission interval
+
 
 Technologies Used:
 
@@ -93,6 +107,7 @@ Threading
 Tkinter
 
 Azure VM
+
 
 Congestion Simulation:
 
