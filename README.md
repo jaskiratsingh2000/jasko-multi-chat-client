@@ -46,7 +46,7 @@ This application implements a TCP based multi client chatroom that is designed t
    
     -TCP socket based communication
 
-    -Multi clint support threads
+    -Multi client support threads
 
     -Breakout rooms for isolated discussions
 
